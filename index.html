@@ -1407,7 +1407,7 @@ func main() {
 
     for i := 0; i &lt; workerCount; i++ {
         wg.Add(1)
-        go doit(i,done,wg)
+        go doit(i,done,&amp;wg)
     }
 
     close(done)
@@ -1415,7 +1415,7 @@ func main() {
     fmt.Println("all done!")
 }
 
-func doit(workerId int,done &lt;-chan struct{},wg sync.WaitGroup) {  
+func doit(workerId int,done &lt;-chan struct{},wg *sync.WaitGroup) {  
     fmt.Printf("[%v] is running\n",workerId)
     defer wg.Done()
     &lt;- done
