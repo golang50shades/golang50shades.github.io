@@ -1750,40 +1750,7 @@ func main() {
         return
     }
 
-    defer resp.Body.Close()//ok, most of the time :-)
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    fmt.Println(string(body))
-}
-</code></pre>
-
-<p>Most of the time when your http request fails the <code>resp</code> variable will be <code>nil</code> and the <code>err</code> variable will be <code>non-nil</code>. However, when you get a redirection failure both variables will be <code>non-nil</code>. This means you can still end up with a leak.</p>
-
-<p>You can fix this leak by adding a call to close <code>non-nil</code> response bodies in the http response error handling block. Another option is to use one <code>defer</code> call to close response bodies for all failed and successful requests.</p>
-
-<pre><code>package main
-
-import (  
-    "fmt"
-    "net/http"
-    "io/ioutil"
-)
-
-func main() {  
-    resp, err := http.Get("https://api.ipify.org?format=json")
-    if resp != nil {
-        defer resp.Body.Close()
-    }
-
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
+    defer resp.Body.Close()
     body, err := ioutil.ReadAll(resp.Body)
     if err != nil {
         fmt.Println(err)
